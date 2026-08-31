@@ -28,10 +28,8 @@ class MainWindow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       appBar: AppBar( // The app bar on top of the screen
         backgroundColor: Colors.blue,
-        
         title: Text(
           'Welcome to Flutactoe!',
           style: TextStyle(color: Colors.white),
@@ -39,7 +37,7 @@ class MainWindow extends StatelessWidget {
       ),
       
       body: // The main content
-        gridUI(testGrid),
+          gridUI(testGrid),
     );
   }
 }
@@ -50,7 +48,10 @@ Widget? gridUI(List<TileState> grid) {
     crossAxisAlignment: CrossAxisAlignment.center,
     children: [
     // FIRST ROW
-    Row(children: [
+    Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children:[
       Container(
         alignment: AlignmentGeometry.center,
         margin: const EdgeInsets.all(10.0),
@@ -78,7 +79,10 @@ Widget? gridUI(List<TileState> grid) {
     ],),
     
     // SECOND ROW
-    Row(children: [
+    Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
       Container(
         alignment: AlignmentGeometry.center,
         margin: const EdgeInsets.all(10.0),
@@ -106,7 +110,10 @@ Widget? gridUI(List<TileState> grid) {
     ],),
     
     // THIRD ROW
-    Row(children: [
+    Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
       Container(
         alignment: AlignmentGeometry.center,
         margin: const EdgeInsets.all(10.0),
@@ -134,7 +141,6 @@ Widget? gridUI(List<TileState> grid) {
       ],
     ),
     ],);
-    
 }
 
 /*
