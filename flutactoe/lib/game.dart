@@ -17,6 +17,22 @@ enum TileState {
   rounds,
 }
 
+String getSymbolFromTileState(TileState tile) {
+    late String result;
+    switch (tile) {
+        case TileState.cross:
+          result = 'X';
+          break;
+        case TileState.rounds:
+          result = 'O';
+          break;
+        case TileState.empty:
+          result = '-';
+          break;
+      }
+      return result;
+  }
+
 // Out of 19 683 different ways a 3x3 grid can be, there are only 8 ways to win the game, which is computable for a human like me.
 
 
@@ -44,7 +60,9 @@ class Game {
   List<int> roundPlays = []; // All the moves of the round are stocked here
   late bool crossTurn; // current turn : true : cross turn, false : round turn. 
 
-  Game();
+  Game() {
+    crossTurn = playerStart();
+  }
 
   bool playerStart() { // Uses randomization to know which player start
     return crossTurn = Random().nextBool();
@@ -76,13 +94,13 @@ class Game {
     return true;
   }
 
-  bool checkWinning(List<List<int>> winningCombos,List<int> player) {
+  bool checkWinning(List<int> player) {
     if (player.length < 3) { // If Cross player has done more than 3 moves, we can check if he wins or not.
       return false;
     }
     else {
-      for (int i = 0; i < winningCombos.length; i++) {
-        if (_checkCombo(winningCombos[i], player) == true) {
+      for (int i = 0; i < winningComboList.length; i++) {
+        if (_checkCombo(winningComboList[i], player) == true) {
           return true;
         }
       }
@@ -131,7 +149,7 @@ class Game {
               grid[userInput-1] = TileState.cross;
               crossPlays.add(userInput-1);
               print('Cross list : $crossPlays');
-              if (checkWinning(winningComboList, crossPlays)) {
+              if (checkWinning(crossPlays)) {
                 print('Cross wins!');
                 break;
               }
@@ -141,7 +159,7 @@ class Game {
               grid[userInput-1] = TileState.rounds;
               roundPlays.add(userInput-1);
               print('Round list : $roundPlays');
-              if (checkWinning(winningComboList, roundPlays)) {
+              if (checkWinning(roundPlays)) {
                 print('Round wins!');
                 break;
               }

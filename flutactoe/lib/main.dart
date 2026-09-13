@@ -22,16 +22,39 @@ class Application extends StatelessWidget {
 }
 
 class MainWindow extends StatefulWidget {
-  Game game = Game();
-  
   @override 
-  State<MainWindow> createState() => _MainWindowState();
+  _MainWindowState createState() => _MainWindowState();
 }
 
 class _MainWindowState extends State<MainWindow> {
   Game game = Game();
   List<TileState> testGrid = [TileState.empty,TileState.empty,TileState.empty,TileState.cross,TileState.cross,TileState.cross,TileState.rounds,TileState.rounds,TileState.rounds,];
-  String turnText = 'Play.';
+  String textTurn = '';
+
+  void updateGame(int index) {
+    setState(() {  
+      if (game.grid[index] == TileState.empty) {
+        if (game.crossTurn) {
+          game.grid[index] = TileState.cross;
+          game.crossPlays.add(index);
+          game.checkWinning(game.crossPlays);
+          game.crossTurn = false;
+          textTurn = "Round's turn";
+        }
+        else {
+          game.grid[index] = TileState.rounds;
+          game.roundPlays.add(index);
+          game.checkWinning(game.roundPlays);
+          game.crossTurn = true;
+          textTurn = "Cross's turn";
+        }
+      }
+      else {
+        textTurn = "You can't play here, select another tile";
+      }
+    });
+  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -50,18 +73,111 @@ class _MainWindowState extends State<MainWindow> {
             spacing: 50,
             children: [
             SizedBox(height: 80,),
-            Text(turnText, style: TextStyle(fontSize: 28),),
-            gridUI(testGrid),
+            Text(textTurn, style: TextStyle(fontSize: 28),),
+
+            Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children:
+                          List.generate(
+                              3,
+                              (index) => GestureDetector(
+                                  onTap:() => updateGame(index),
+                                  child:
+                                      Container(
+                                          alignment: AlignmentGeometry.center,
+                                          margin: const EdgeInsets.all(10.0),
+                                          width: 100,
+                                          height: 100, 
+                                          color: updateTileColor(game.grid[index]),
+                                          child: Text(getSymbolFromTileState(game.grid[index]), style: TextStyle(color: Colors.white, fontSize: 68),)
+                                      ),
+                                ), 
+                            ),
+                      ),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children:
+                          List.generate(
+                              3,
+                              (index) => GestureDetector(
+                                  onTap:() => updateGame(index+3),
+                                  child:
+                                      Container(
+                                          alignment: AlignmentGeometry.center,
+                                          margin: const EdgeInsets.all(10.0),
+                                          width: 100,
+                                          height: 100, 
+                                          color: updateTileColor(game.grid[index+3]),
+                                        
+                                          child: Text(getSymbolFromTileState(game.grid[index+3]), style: TextStyle(color: Colors.white, fontSize: 68),)
+                                      ),
+                                ), 
+                            ),
+                      ),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children:
+                          List.generate(
+                              3,
+                              (index) => GestureDetector(
+                                  onTap:() => updateGame(index+6),
+                                  child:
+                                      Container(
+                                          alignment: AlignmentGeometry.center,
+                                          margin: const EdgeInsets.all(10.0),
+                                          width: 100,
+                                          height: 100, 
+                                          color: updateTileColor(game.grid[index+6]),
+                                          child: Text(getSymbolFromTileState(game.grid[index+6]), style: TextStyle(color: Colors.white, fontSize: 68),)
+                                      ),
+                                ), 
+                            ),
+                      ),
+                  ],
+              ),
           ])
-    );
+      );
+
+
+
+
+            // gridUI(testGrid),
+  }
+
+  void gridUI(List<TileState> grid) {
+    
   }
 }
 
-Widget gridUI(List<TileState> grid) {
-  return Column(
-    mainAxisAlignment: MainAxisAlignment.center,
-    crossAxisAlignment: CrossAxisAlignment.center,
-    children: [
+
+Color updateTileColor(TileState state) {
+  switch (state) {
+    case TileState.cross:
+      return Colors.red;
+    case TileState.rounds:
+      return Colors.lightBlue;
+    case TileState.empty:
+      return Colors.blueGrey;
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+/*
     // FIRST ROW
     Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -129,7 +245,7 @@ Widget gridUI(List<TileState> grid) {
           color: updateTileColor(grid[3]),
         ),
 
-        child: Text(getSymbolFromTileState(grid[3]), style: TextStyle(color: Colors.white, fontSize: 76),),
+        child: Text(getSymbolFromTileState(grid[3]), style: TextStyle(color: Colors.white, fontSize: 76,),),
       ),
       Container(
         alignment: AlignmentGeometry.center,
@@ -207,17 +323,8 @@ Widget gridUI(List<TileState> grid) {
     ),
     ],);
 }
+*/
 
-Color updateTileColor(TileState state) {
-  switch (state) {
-    case TileState.cross:
-      return Colors.red;
-    case TileState.rounds:
-      return Colors.lightBlue;
-    case TileState.empty:
-      return Colors.blueGrey;
-    }
-  }
 
 void onGridTap() {
   print("Hello, World!");
