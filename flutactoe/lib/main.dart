@@ -27,10 +27,22 @@ class MainWindow extends StatefulWidget {
 }
 
 class _MainWindowState extends State<MainWindow> {
-  Game game = Game();
+  late Game game;
   List<TileState> testGrid = [TileState.empty,TileState.empty,TileState.empty,TileState.cross,TileState.cross,TileState.cross,TileState.rounds,TileState.rounds,TileState.rounds,];
-  String textTurn = '';
+  late String textTurn;
 
+  @override
+  void initState() {
+      super.initState();
+      game = Game();
+      game.crossTurn = game.playerStart();
+      if (game.crossTurn) {
+          textTurn = "Cross's turn";
+      }
+      else {
+          textTurn = "Round's turn";
+      }
+  }
   void updateGame(int index) {
     setState(() {  
       if (game.grid[index] == TileState.empty) {
@@ -73,8 +85,11 @@ class _MainWindowState extends State<MainWindow> {
             spacing: 50,
             children: [
             SizedBox(height: 80,),
+            
+            // MAIN TEXT TELLING WHICH TURN IS IT
             Text(textTurn, style: TextStyle(fontSize: 28),),
 
+            // MAIN GRID
             Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -142,6 +157,9 @@ class _MainWindowState extends State<MainWindow> {
                       ),
                   ],
               ),
+          
+            // RESET BUTTON
+
           ])
       );
 
