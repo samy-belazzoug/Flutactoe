@@ -28,6 +28,7 @@ class MainWindow extends StatefulWidget {
 
 class _MainWindowState extends State<MainWindow> {
   late Game game;
+  bool freeze = false;
   List<TileState> testGrid = [TileState.empty,TileState.empty,TileState.empty,TileState.cross,TileState.cross,TileState.cross,TileState.rounds,TileState.rounds,TileState.rounds,];
   late String textTurn;
 
@@ -46,25 +47,32 @@ class _MainWindowState extends State<MainWindow> {
   
   void updateGame(int index) {
     setState(() {  
-      if (game.grid[index] == TileState.empty) {
-        if (game.crossTurn) {
-          game.grid[index] = TileState.cross;
-          game.crossPlays.add(index);
-          game.checkWinning(game.crossPlays);
-          game.crossTurn = false;
-          textTurn = "Round's turn";
+        if (!freeze) {
+            if (game.grid[index] == TileState.empty) {
+                if (game.crossTurn) {
+                    game.grid[index] = TileState.cross;
+                    game.crossPlays.add(index);
+                    textTurn = "Round's turn";
+                    if (game.checkWinning(game.crossPlays)) {
+                        textTurn = "Cross won!";
+                        freeze = true;
+                    }
+                    game.crossTurn = false;
+                }
+                else {
+                    game.grid[index] = TileState.rounds;
+                    game.roundPlays.add(index);
+                    textTurn = "Cross's turn";
+                    if (game.checkWinning(game.roundPlays)) {
+                        textTurn = "Round won!";
+                    };
+                    game.crossTurn = true;
+                }
+          }
+          else {
+            textTurn = "You can't play here, select another tile";
+          }
         }
-        else {
-          game.grid[index] = TileState.rounds;
-          game.roundPlays.add(index);
-          game.checkWinning(game.roundPlays);
-          game.crossTurn = true;
-          textTurn = "Cross's turn";
-        }
-      }
-      else {
-        textTurn = "You can't play here, select another tile";
-      }
     });
   }
 
@@ -76,6 +84,7 @@ class _MainWindowState extends State<MainWindow> {
       game.roundPlays.clear();
       game.crossPlays.clear();
       game.crossTurn = game.playerStart();
+      freeze = false;
     }
     );
   }
