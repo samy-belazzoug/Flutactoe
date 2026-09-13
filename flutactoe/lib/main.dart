@@ -43,6 +43,7 @@ class _MainWindowState extends State<MainWindow> {
           textTurn = "Round's turn";
       }
   }
+  
   void updateGame(int index) {
     setState(() {  
       if (game.grid[index] == TileState.empty) {
@@ -66,7 +67,18 @@ class _MainWindowState extends State<MainWindow> {
       }
     });
   }
-  
+
+  void reset() {
+    setState(() {
+      for (int i = 0; i < game.grid.length; i++) {
+        game.grid[i] = TileState.empty;
+      }
+      game.roundPlays.clear();
+      game.crossPlays.clear();
+      game.crossTurn = game.playerStart();
+    }
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,8 +93,9 @@ class _MainWindowState extends State<MainWindow> {
       
       body: // The main content
           Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
-            spacing: 50,
+            spacing: 20,
             children: [
             SizedBox(height: 80,),
             
@@ -159,18 +172,22 @@ class _MainWindowState extends State<MainWindow> {
               ),
           
             // RESET BUTTON
-
+            Container(
+                alignment: AlignmentGeometry.center,
+                margin: const EdgeInsets.all(10.0),
+                width: 300,
+                height: 50,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(7)),
+                    color: Colors.blueGrey,
+                ),
+                child: 
+                  GestureDetector( 
+                    onTap: () => reset(),
+                    child: Text('Reset', style: TextStyle(color: Colors.white, fontSize: 32),))
+            )
           ])
       );
-
-
-
-
-            // gridUI(testGrid),
-  }
-
-  void gridUI(List<TileState> grid) {
-    
   }
 }
 
@@ -185,15 +202,6 @@ Color updateTileColor(TileState state) {
       return Colors.blueGrey;
     }
   }
-
-
-
-
-
-
-
-
-
 
 /*
     // FIRST ROW
